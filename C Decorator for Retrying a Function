@@ -1,0 +1,21 @@
+def retry_decorator(max_attempts=3):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            attempts = 0
+            while attempts < max_attempts:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    attempts += 1
+                    print(f"Attempt {attempts} failed: {e}")
+            raise RuntimeError(f"Function {func.__name__} failed after {max_attempts} attempts.")
+        return wrapper
+    return decorator
+
+@retry_decorator(max_attempts=3)
+def example_retry_function():
+    if random.randint(0, 1):
+        raise ValueError("Random error")
+    return "Success"
+
+print(example_retry_function())
