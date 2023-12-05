@@ -1,0 +1,18 @@
+def transform_exception_decorator(original_exception, new_exception):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except original_exception as e:
+                raise new_exception(f"Transformed {original_exception.__name__} to {new_exception.__name__}: {e}")
+        return wrapper
+    return decorator
+
+@transform_exception_decorator(ZeroDivisionError, ValueError)
+def example_exception_function():
+    return 1 / 0
+
+try:
+    example_exception_function()
+except ValueError as e:
+    print(e)
