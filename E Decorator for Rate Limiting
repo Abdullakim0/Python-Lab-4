@@ -1,0 +1,32 @@
+import time
+
+def rate_limit_decorator(limit_calls, limit_time):
+    def decorator(func):
+        last_call_time = 0
+        calls_made = 0
+
+        def wrapper(*args, **kwargs):
+            nonlocal last_call_time, calls_made
+            current_time = time.time()
+
+            if calls_made < limit_calls and current_time - last_call_time >= limit_time:
+                result = func(*args, **kwargs)
+                calls_made += 1
+                last_call_time = current_time
+                return result
+            else:
+                raise RuntimeError(f"Rate limit exceeded. Allow {limit_calls} calls in {limit_time} seconds.")
+
+        return wrapper
+    return decorator
+
+@rate_limit_decorator(limit_calls=3, limit_time=300)
+def example_rate_limited_function():
+    print("Function called")
+    return 42
+
+for _ in range(5):
+    try:
+        print(example_rate_limited_function())
+    except RuntimeError as e:
+        print(e)
