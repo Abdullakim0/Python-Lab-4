@@ -1,0 +1,15 @@
+def compose_decorators(*decorators):
+    def decorator(func):
+        for dec in reversed(decorators):
+            func = dec(func)
+        return func
+    return decorator
+
+# Example Usage:
+@compose_decorators(list_to_generator_decorator, lazy_evaluation_decorator)
+def example_composed_function():
+    print("Function called")
+    return [1, 2, 3]
+
+for item in example_composed_function():
+    print(item)
