@@ -1,0 +1,11 @@
+def list_to_generator_decorator(func):
+    def wrapper(*args, **kwargs):
+        return iter(func(*args, **kwargs))
+    return wrapper
+
+@list_to_generator_decorator
+def example_function():
+    return [1, 2, 3, 4, 5]
+
+for item in example_function():
+    print(item)
